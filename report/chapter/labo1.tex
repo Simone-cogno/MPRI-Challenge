@@ -1,15 +1,14 @@
 
 
-\chapter*{SVM}
-Pour la reconnaissance du geste dans ce challenge on pouvait choisir entre 3 différents algorithmes de machine learning. J'ai choisi SVM parce que c'était l'algorithme que j'avais compris le plus. j'avait le dut avec choiri ANN mais a été choisì par mon collègue Marco. HMM il parait entre le plus adapté par la structure des données à traiter mais il est plus compliqué a mettre en place ainsi.
+\chapter*{SVM-Simone Cogno}
+Pour la reconnaissance du geste dans ce challenge, on pouvait choisir entre 3 différents algorithmes de machine learning. J'ai choisi SVM parce que c'était l'algorithme que j'avais compris le plus. j'avais le dut avec choisi ANN, mais a été choisi par mon collègue Marco. HMM il parait entre le plus adapté par la structure des données à traiter, mais ses détails d'implémentation n'est sont pas encore assai claire.
 
-\section*{Pretraitement}
-Dans la phase de pretraitement il a été effectué une modification initiale de données brute pour le mieux visualiser et pour le rendre plus lisible.
- Pour ce faire pn a créee de Histogramme pour chaque caractéristique pour visualiser mieux dans quelle "range" de valeur était présent pour chaque geste. 
+\section*{Prétraitement}
+Dans la phase de prétraitement, il a été effectué une modification initiale de données brutes pour le mieux visualiser et pour le rendre plus lisible.
+ Pour ce faire on a créé des Histogrammes pour chaque caractéristique.
+Dans l'image \ref{fig:prehist} on peut voir, un histogramme fait en utilsiatn l'accélération de la main dans l'axe des X.
 
-Dans l'image \ref{fig:prehist} on peut voire trois exemple d'un histogramme fait accélération de la main dans l'axe des Y.
-
-On peut voire que le range de valeur va entre -1  jusqu'à 1 pour la majorité des points.
+On peut voir que le range des valeurs va entre -1  jusqu'à 1 pour la majorité des points.
 \begin{figure}[h]
   \centering
     \includegraphics[width=0.5\linewidth]{img/pretraitement/hist10.png}
@@ -17,16 +16,26 @@ On peut voire que le range de valeur va entre -1  jusqu'à 1 pour la majorité d
   \label{fig:prehist}
 \end{figure}
 
-En addition â la lisibilité du signal un histogramme peut etre tres utile pour reppresenter un signal continue en un unique vecteur de valeur pour entrainer un SVM. 
-En effet SVM veut en entrée une matrice ou chaque ligne corrispond a un classe complete. Il a follu donc parcourrir toutes les observation d'une classe pour pouvoire creer un histogramme et le donner en entree à notre SVM.
+En addition à la lisibilité du signal, un histogramme peut être très utile pour représenter un signal continu.
 
+Sur les données des histogrammes une normalisation a été effectué pour éviter d'avoir de différence par rapport au nombre d'observations de chaque classe  et caractéristique.
 
+Pour faire cela, on a divisé chaque valeur de l'histogramme par le nombre d'observations totales.
+
+On peut voire dans la figure \ref{fig:normalization} que les deux histogrammes à gauche sont ont de valeur diffèrent, mais la forme est identique. Pour notre algorithme on ne s’intéresse pas aux valeurs elles-mêmes, mais plutôt à la forme de l'histogramme. Ces deux histogrammes douteraient être alors identique. La normalisation sur les valeurs fait exactement cela (histogrammes à gauche)
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\linewidth]{img/pretraitement/normalization.png}
+  \caption{Normalisation des valeurs des histogrammes}
+  \label{fig:normalization}
+\end{figure}
 
 
 \section*{Extraction des caractéristiques}
-Dans cette phase on a pu utiliser les histogramme fait dans le pretraitement pour mieux comprendre les caracteristiques. Il a été effectué un comparaison entre plusieur histogramme fait sur lem'eme signal mais avec de classe differents. Dans l'image \ref{fig:histogram-pre} on peut voire que l'histogramme du signal AccX est assais different pour el trois classe mise en evidence.
+Dans cette phase on a pu utiliser les histogrammes faits dans le prétraitement pour mieux comprendre les caractéristiques. Il a été effectué une comparaison entre plusieurs histogrammes faits sur le même signal, mais avec de classe différente. Dans l'image \ref{fig:histogram-pre} on peut voir que l'histogramme du signal AccX est assai différent pour les trois classes mises en évidence.
 
-Ce signal peurra donc entre un bon candidat pour differentier les differents classes et pour entrainernotre modele. 
+Ce signal puera donc entre un bon candidat pour différentier les différentes classes et pour entrainer notre modèle. 
 
 
 \begin{figure}[h!]
@@ -37,29 +46,33 @@ Ce signal peurra donc entre un bon candidat pour differentier les differents cla
       \includegraphics[width=.30\linewidth]{img/pretraitement/hist10.png} \\
       (a) & (b) & (c)\\
     \end{tabular}
-    \caption{AccX pour le classe (a) 0 (b) 1 (c) 10
+    \caption{AccX pour les classes (a) 0 (b) 1 (c) 10
     \label{fig:histogram-pre}}
 \end{figure}
 
 
-En plus des l'"AccX" il à été utilise le "AccY", "AccZ" de la main et le "AccX","Z" du bracelet ainsi que le signal "Pinch" de la main.
+En plus des l'"AccX" il a été utilise le "AccY", "AccZ" de la main et le "AccX","Z" du bracelet ainsi que le signal "Pinch" de la main.
 
-Ces differents histogrammes  des carcacteristiques a été mis ensemble pour donner un unique vecteru des caracteristique. 
+Ces différents histogrammes  des caractéristiques ont été mis ensemble pour donner un unique vecteur des caractéristiques. 
 
-Un visualisation des histogramme mis ensemble pour quatre differents classe est montré dans l'image \ref{fig:histvector}. Dans cette figure sont montré toutes les occurence de chaque classe.
+Une visualisation des histogrammes mis ensemble pour quatre différentes classes est montrée dans l'image \ref{fig:histvector}. Dans cette figure sont montrées toutes les occurrences de chaque classe.
 
 \begin{figure}[h]
   \centering
     \includegraphics[width=1\linewidth]{img/extraction/vector-hist.png}
-  \caption{Group of histogramme for a unique vector for four classes}
+  \caption{Group of histogrammes représentant quatre different classes}
   \label{fig:histvector}
 \end{figure}
 
-O peut voire de cette figure que la forme des histogrammes pour un geste est presque identique pour toutes le soccurence.Par contre il est assas different pour un outre geste.
+O peut voir depuis cette figure que la forme des histogrammes est presque identique pour le même geste. Par contre il est assis diffèrent par rapport les outres geste.
 
 \section*{Entrainement}
-Pour entrainer le SVM on a besoin d'une matrice ou chaque ligne reresent un geste et chaque colonne une feature. Dans notre cas pour chaque histogramme on a plus ou moin 10 feature qui sont reppresenté par un nombre de 0 a 1. 
 
+Pour entrainer le SVM on a besoin d'une matrice où chaque ligne représente un geste et chaque colonne une caractéristique. Dans notre cas pour chaque histogramme, on a plus ou moins 10 caractéristiques qui sont représentées par un nombre de 0 à 1.  Ces caractéristiques sont en effet les bins des histogrammes.
+
+Pour entrainer notre modèle avec un SVM binaire il a été cecessaire d’ entrainer et créer plusieurs modèles: un modèle par classe. En faisons cela chaque modèle est capable de reconnaitre une seule classe.
+
+La démarche d'entrainement sera donc la suivante:
 \begin{lstlisting}[language=python]
     for i=1:NUM_CLASSES %Train model for all classes
         label=(Y==i); %Convert multi class to double class 1 or 0
@@ -67,35 +80,78 @@ Pour entrainer le SVM on a besoin d'une matrice ou chaque ligne reresent un gest
     end  %code insipred to multiclass svm
 \end{lstlisting}
 
+
+Pour entrainer et tester en locale l'algorithme, le set d'entrainement a été divisé en deux parties. Le premier a été utilisé pour entrainer le modèle et le deuxième pour tester en locale(figure \ref{fig:trainset}). Le test final e été fait directement sur la plateforme Opegra.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\linewidth]{img/evaluation/trainset.png}
+  \caption{Découpage du set d'entrainement et de test}
+  \label{fig:trainset}
+\end{figure}
+
+
+
 \section*{Évaluation}
-L'evaluation des données de tests a été effectué en utilisant le modele crée durant l'entrainement. Pour utilise un SVM binaire pour reconaitre plusieurs classe on fait un evaluation de chaque modele créee lors le l'entrainement avec le geste du test. La classe de test sera identifié quand un des ces modeles respond positivement.
+L'évaluation des données de tests a été effectuée en utilisant les modèles créés durant l'entrainement. Pour utiliser un SVM binaire pour reconnaitre plusieurs classes on fait une évaluation de chaque modelé avec le geste du test. La classe de test sera identifiée quand un de ces modèles répond positivement.
 
-le diagramme \ref{fig:models-svm} montre en maniere schematique comment ce algorithme fonctionne, On peut voir que chaque entree verra evelué par chaque modee SVM jusqu'a un modee le reconait.
+Le diagramme \ref{fig:models-svm} montre en manière schématique comment cet algorithme fonctionne, on peut, voir que chaque entrée sera évaluée par chaque modèle SVM jusqu'à un modèle le reconnait.
 
-Le probleme de cette methode est que si aucun des modele reconnait la classe d'un instance de tests un valeur par default lui sera attributé dans notre case la classe 10.
+Le problème de cette méthode est que si aucun des modelés ne reconnait la classe d'une instance de tests, une valeur par défaut lui sera attribuée, dans notre case la classe 10.
 
-Cela ça peut devenir un problem quand le geste seront beaucoup et similaire entre eux. Un manierepour ammeliorer ça peurra entre d'attribuer un score à chaque evalaution de classe et au final choisi celle avec le plus grand score.
+Cela, ça peut devenir un problème quand les gestes seront nombreux et similaires entre eux. Une manière pour améliorer cela puera être d'attribuer un score à chaque évaluation de classe et finalement choisir celle avec le plus grand score.
 
 
 \begin{figure}[h]
   \centering
-    \includegraphics[width=0.7\linewidth]{img/evaluation/confusion.png}
-  \caption{Group of histogramme for a unique vector for four classes}
-  \label{fig:histvector}
+    \includegraphics[width=0.7\linewidth]{img/evaluation/svm-class.png}
+  \caption{Matrice de confusion de l'évaluation des gestes de test}
+  \label{fig:models-svm}
 \end{figure}
 
 
-\section*{Résultats obtenu}
-Dans la matrce de confusion obtenu  depuis l'evaluation du set de test on petu voireque le classe sont assais bien classifier parce que sont distrubue pour la plupart sur la diagonale.
+\section*{Résultats obtenus}
+Dans la matrice de confusion obtenue depuis l'évaluation du set de test  (figure \ref{fig:conferror})  on peut voire que les classes sont assai bien classifier parce que sont distribué pour la plupart sur la diagonale. Le F1-Score de ce algorithme ainsi que ce score total dans Opegra est de \textbf{0.86}.
 
-Par contre il a encore quelque geste que l'algorithme l'echange avec un outre geste similaire ou qu'il a encore beaucoup d'erreur de reconnaissance. On voit par exemplque que l'algorithme `un certen difficulté a 
+Par contre il a encore quelque geste que l'algorithme est indécis entre deux gestes similaires et il a encore beaucoup d'erreurs de reconnaissance. On voit par exemple que l'algorithme a une certaine difficulté a différencier le geste right/left et push/pull.
 
-\section*{Problèmes rencontrées}
--dsvm
--fitcecoc
+On voit aussi que beaucoup d'erreurs sont dans la class 11. Comme explique dans la section précédente c'est en effet les  lasse que ne son pas reconnu par les modelés entrainés.
 
+
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.7\linewidth]{img/evaluation/evalerror.png}
+  \caption{Matrice de confusion de l'évaluation des gestes de test}
+  \label{fig:conferror}
+\end{figure}
+
+\section*{Problèmes rencontrés}
+Dans la première version de l'algorithme a été utilisé Fitcecoc comme fonction d'entrainement pour l'algorithme SVM. Après avoir appris que cette fonction n'étés pas supportée par la plateforme Opegra \footnote{Opegra,\url{https://project.eia-fr.ch/chairgest/Pages/Opegra/Download.aspx}}. J’ai recherché sur internet une fonction similaire qui était compatible avec Matlab 2014. J'ai donc trouvé la fonction DSVM   \footnote{DVSM,\url{http://www.mathworks.com/matlabcentral/fileexchange/downloads/68289/akamai/DSVM.zip}} Mais ce script il faisait une erreur quand on faisait un entrainement avec plus que 6 classes comme montré dans l'image \ref{fig:dsvm}. 
+
+Ensuite a version similaire a le multiclass SVM \footnote{Multiclass SVM,\url{http://www.mathworks.com/matlabcentral/fileexchange/33170-multi-class-support-vector-machine}} a été implémenté même si n'est pas une solution définitive.
+
+
+J'ai aussi rencontré quelque problème a intégrer les données de la kinect, mais,  vu le nombre d'observations différentes par rapport au dataset su xsens je n'ai pas réussi a l’ implémenter.
+
+
+ 
 
 \section*{Perspectives et améliorations}
+Certaines améliorations pouvant être effectuées sur la partie d'entrainement de l'algorithme SVM. Par exemple, il sera envisageable d’ implémenter un k-fold cross validation pour l'entrainement des nos modèles. 
+Une extraction des caractéristiques plus avancée pourra aussi être effectuée sur les données par exemple avec une analyse FFT.
+Ensuite une amélioration de l’ algorithme multiclass SVM pourra être effectuée en définissant un score à chaque évaluation pour évier d'avoine des classes pas détectées.
+
+Bien sûr un meilleur choix des caractéristiques utilisé dans l'algorithme sera aussi très important pour améliorer le score de reconnaissance de l'algorithme.
+
+\section*{Conclusion}
+En conclusion l'algorithme SVM utilisé pour cette expérience fonctionne bien avec les caractéristiques et le prétraitement effectué sur le données. Il a été  atteint un F1-Score de 0.86 qui est suffisant pour un algorithme de ce type. C'est évidant que sera encore améliorable avec un entrainement plus précis, une extraction des caractéristiques plus avancées et un choix et une analyse plus détaillée sur les caractéristiques à utiliser pour différencier les différents gestes.
+
+
+
+
+
+
 
 
 % Code integration example
