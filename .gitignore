@@ -5,3 +5,7 @@
 *.pdf
 *.tex.backup
 *.pyc
+
+*.bak
+
+report/report.synctex.gz
